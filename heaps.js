@@ -4,50 +4,49 @@ function BinaryHeap(predicate) {
 
     // Remove the element at the top of the heap.
     this.get = function () {
-        if(ary[0] === undefined) {
+        if(ary.length === 0) {
             return undefined;
         }
 
-        var ret = ary[0].value;
-        ary[0] = undefined;
+        var first = ary.shift();
+        if(ary.length === 0) {
+            return first.value;
+        }
 
+        // Put the last entry at the top of the heap.
+        ary.unshift(ary.pop());
+
+        // Percolate the last entry down to its rightful place to enforce the heap property.
         var curIdx = 0;
         while(true) {
             var leftChild = getLeftChildOf(curIdx);
             var rightChild = getRightChildOf(curIdx);
 
-            // Decide which child node to promote.
+            // Decide which child node to swap with, if any.
             var whichToPromote;
             if(!isValid(leftChild) && !isValid(rightChild)) {
                 break;
-            } else if(!isValid(leftChild)) {
-                whichToPromote = rightChild;
             } else if(!isValid(rightChild)) {
                 whichToPromote = leftChild;
             } else {
                 whichToPromote = doPredicate(leftChild, rightChild) ? leftChild : rightChild;
             }
 
-            // Promote the chosen child.
+            // Do a swap if appropriate.
+            if(doPredicate(curIdx, whichToPromote)) {
+                break;
+            }
             swap(curIdx, whichToPromote);
 
             curIdx = whichToPromote;
         }
 
-        return ret;
+        return first.value;
     }
 
     // Add an element to the heap.
     this.put = function (priority, obj) {
-        // Scan through the array looking for the first undefined entry and fill it.
-        var curIdx;
-        for(var i=0; i<=ary.length; i++) {
-            if(ary[i] === undefined) {
-                curIdx = i;
-                ary[i] = {key: priority, value: obj};
-                break;
-            }
-        }
+        var curIdx = ary.push({key: priority, value: obj}) - 1;
 
         // Bubble the new entry upwards toward the root as far as possible to enforce the heap property.
         while(true) {
@@ -68,11 +67,7 @@ function BinaryHeap(predicate) {
     }
 
     function getParentOf(i) {
-        if(i === 0) {
-            return undefined;
-        } else {
-            return Math.floor((i-1)/2);
-        }
+        return Math.floor((i-1)/2);
     }
 
     function getLeftChildOf(i) {
@@ -90,7 +85,7 @@ function BinaryHeap(predicate) {
     }
 
     function isValid(i) {
-        return (i < ary.length) && ary[i];
+        return i < ary.length;
     }
 
     function doPredicate(a, b) {
