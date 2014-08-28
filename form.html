@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .box {
+                display: inline-block;
+                border: 1px solid;
+                border-radius: 10px;
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="box">
+            <form action="http://localhost:8080/" method="post">
+                Priority: <input type="text" name="priority" value="0" /><br />
+                Message: <input type="text" name="message" /><br />
+                <input type="submit" value="Submit new message" />
+            </form>
+        </div>
+        <br />
+        <div class="box">
+            <form action="http://localhost:8080/" method="get">
+                <input type="submit" value="Get highest priority message" />
+            </form>
+        </div>
+    </body>
+</html>
